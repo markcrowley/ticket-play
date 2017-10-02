@@ -6,5 +6,7 @@ target
 /.project
 /.settings
 /RUNNING_PID
-
+/.ensime_cache
 /.vscode
+.ensime
+/*.log
