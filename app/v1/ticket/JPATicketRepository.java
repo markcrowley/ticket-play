@@ -40,7 +40,7 @@ public class JPATicketRepository implements TicketRepository {
 
     @Override
     public CompletionStage<TicketData> create(TicketData ticketData) {
-        return supplyAsync(() -> wrap(em -> insert(em, postData)), ec);
+        return supplyAsync(() -> wrap(em -> insert(em, ticketData)), ec);
     }
 
     @Override
