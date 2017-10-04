@@ -1,4 +1,4 @@
-package v1.post;
+package v1.ticket;
 
 import net.jodah.failsafe.CircuitBreaker;
 import net.jodah.failsafe.Failsafe;
@@ -21,63 +21,63 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  * and circuit breaker.
  */
 @Singleton
-public class JPAPostRepository implements PostRepository {
+public class JPATicketRepository implements TicketRepository {
 
     private final JPAApi jpaApi;
-    private final PostExecutionContext ec;
+    private final TicketExecutionContext ec;
     private final CircuitBreaker circuitBreaker = new CircuitBreaker().withFailureThreshold(1).withSuccessThreshold(3);
 
     @Inject
-    public JPAPostRepository(JPAApi api, PostExecutionContext ec) {
+    public JPATicketRepository(JPAApi api, TicketExecutionContext ec) {
         this.jpaApi = api;
         this.ec = ec;
     }
 
     @Override
-    public CompletionStage<Stream<PostData>> list() {
+    public CompletionStage<Stream<TicketData>> list() {
         return supplyAsync(() -> wrap(em -> select(em)), ec);
     }
 
     @Override
-    public CompletionStage<PostData> create(PostData postData) {
+    public CompletionStage<TicketData> create(TicketData ticketData) {
         return supplyAsync(() -> wrap(em -> insert(em, postData)), ec);
     }
 
     @Override
-    public CompletionStage<Optional<PostData>> get(Long id) {
+    public CompletionStage<Optional<TicketData>> get(Long id) {
         return supplyAsync(() -> wrap(em -> Failsafe.with(circuitBreaker).get(() -> lookup(em, id))), ec);
     }
 
     @Override
-    public CompletionStage<Optional<PostData>> update(Long id, PostData postData) {
-        return supplyAsync(() -> wrap(em -> Failsafe.with(circuitBreaker).get(() -> modify(em, id, postData))), ec);
+    public CompletionStage<Optional<TicketData>> update(Long id, TicketData ticketData) {
+        return supplyAsync(() -> wrap(em -> Failsafe.with(circuitBreaker).get(() -> modify(em, id, ticketData))), ec);
     }
 
     private <T> T wrap(Function<EntityManager, T> function) {
         return jpaApi.withTransaction(function);
     }
 
-    private Optional<PostData> lookup(EntityManager em, Long id) throws SQLException {
+    private Optional<TicketData> lookup(EntityManager em, Long id) throws SQLException {
         throw new SQLException("Call this to cause the circuit breaker to trip");
-        //return Optional.ofNullable(em.find(PostData.class, id));
+        //return Optional.ofNullable(em.find(TicketData.class, id));
     }
 
-    private Stream<PostData> select(EntityManager em) {
-        TypedQuery<PostData> query = em.createQuery("SELECT p FROM PostData p", PostData.class);
+    private Stream<TicketData> select(EntityManager em) {
+        TypedQuery<TicketData> query = em.createQuery("SELECT p FROM TicketData p", TicketData.class);
         return query.getResultList().stream();
     }
 
-    private Optional<PostData> modify(EntityManager em, Long id, PostData postData) throws InterruptedException {
-        final PostData data = em.find(PostData.class, id);
+    private Optional<TicketData> modify(EntityManager em, Long id, TicketData ticketData) throws InterruptedException {
+        final TicketData data = em.find(TicketData.class, id);
         if (data != null) {
-            data.title = postData.title;
-            data.body = postData.body;
+            data.title = ticketData.title;
+            data.body = ticketData.body;
         }
         Thread.sleep(10000L);
         return Optional.ofNullable(data);
     }
 
-    private PostData insert(EntityManager em, PostData postData) {
-        return em.merge(postData);
+    private TicketData insert(EntityManager em, TicketData ticketData) {
+        return em.merge(ticketData);
     }
 }

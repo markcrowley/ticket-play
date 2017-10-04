@@ -1,4 +1,4 @@
-package v1.post;
+package v1.ticket;
 
 import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
@@ -21,8 +21,8 @@ import static com.codahale.metrics.MetricRegistry.name;
 import static java.util.concurrent.CompletableFuture.completedFuture;
 import static play.mvc.Http.Status.*;
 
-public class PostAction extends play.mvc.Action.Simple {
-    private final Logger.ALogger logger = play.Logger.of("application.PostAction");
+public class TicketAction extends play.mvc.Action.Simple {
+    private final Logger.ALogger logger = play.Logger.of("application.TicketAction");
 
     private final Meter requestsMeter;
     private final Timer responsesTimer;
@@ -31,11 +31,11 @@ public class PostAction extends play.mvc.Action.Simple {
 
     @Singleton
     @Inject
-    public PostAction(MetricRegistry metrics, HttpExecutionContext ec, Futures futures) {
+    public TicketAction(MetricRegistry metrics, HttpExecutionContext ec, Futures futures) {
         this.ec = ec;
         this.futures = futures;
         this.requestsMeter = metrics.meter("requestsMeter");
-        this.responsesTimer = metrics.timer(name(PostAction.class, "responsesTimer"));
+        this.responsesTimer = metrics.timer(name(TicketAction.class, "responsesTimer"));
     }
 
     public CompletionStage<Result> call(Http.Context ctx) {
@@ -50,9 +50,7 @@ public class PostAction extends play.mvc.Action.Simple {
                 return (Results.status(GATEWAY_TIMEOUT, views.html.timeout.render()));
             }).whenComplete((r, e) -> time.close());
         } else {
-            return completedFuture(
-                    status(NOT_ACCEPTABLE, "We only accept application/json")
-            );
+            return completedFuture(status(NOT_ACCEPTABLE, "We only accept application/json"));
         }
     }
 

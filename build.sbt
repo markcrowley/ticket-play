@@ -1,6 +1,6 @@
-name := """play-java-rest-api-example"""
+name := """ticket-play"""
 
-version := "2.6.x"
+version := "0.1-dev"
 
 inThisBuild(
   List(

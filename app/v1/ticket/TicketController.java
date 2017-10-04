@@ -1,4 +1,4 @@
-package v1.post;
+package v1.ticket;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import play.libs.Json;
@@ -10,32 +10,28 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
-@With(PostAction.class)
-public class PostController extends Controller {
+@With(TicketAction.class)
+public class TicketController extends Controller {
 
     private HttpExecutionContext ec;
-    private PostResourceHandler handler;
+    private TicketResourceHandler handler;
 
     @Inject
-    public PostController(HttpExecutionContext ec, PostResourceHandler handler) {
+    public TicketController(HttpExecutionContext ec, TicketResourceHandler handler) {
         this.ec = ec;
         this.handler = handler;
     }
 
     public CompletionStage<Result> list() {
-        return handler.find().thenApplyAsync(posts -> {
-            final List<PostResource> postList = posts.collect(Collectors.toList());
-            return ok(Json.toJson(postList));
+        return handler.find().thenApplyAsync(tickets -> {
+            final List<TicketResource> ticketList = tickets.collect(Collectors.toList());
+            return ok(Json.toJson(ticketList));
         }, ec.current());
     }
 
     public CompletionStage<Result> show(String id) {
         return handler.lookup(id).thenApplyAsync(optionalResource -> {
-            return optionalResource.map(resource ->
-                ok(Json.toJson(resource))
-            ).orElseGet(() ->
-                notFound()
-            );
+            return optionalResource.map(resource -> ok(Json.toJson(resource))).orElseGet(() -> notFound());
         }, ec.current());
     }
 
@@ -43,11 +39,7 @@ public class PostController extends Controller {
         JsonNode json = request().body().asJson();
         PostResource resource = Json.fromJson(json, PostResource.class);
         return handler.update(id, resource).thenApplyAsync(optionalResource -> {
-            return optionalResource.map(r ->
-                    ok(Json.toJson(r))
-            ).orElseGet(() ->
-                    notFound()
-            );
+            return optionalResource.map(r -> ok(Json.toJson(r))).orElseGet(() -> notFound());
         }, ec.current());
     }
 

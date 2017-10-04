@@ -1,25 +1,25 @@
-package v1.post;
+package v1.ticket;
 
 /**
  * Resource for the API.  This is a presentation class for frontend work.
  */
-public class PostResource {
+public class TicketResource {
     private String id;
     private String link;
     private String title;
     private String body;
 
-    public PostResource() {
+    public TicketResource() {
     }
 
-    public PostResource(String id, String link, String title, String body) {
+    public TicketResource(String id, String link, String title, String body) {
         this.id = id;
         this.link = link;
         this.title = title;
         this.body = body;
     }
 
-    public PostResource(PostData data, String link) {
+    public TicketResource(TicketData data, String link) {
         this.id = data.id.toString();
         this.link = link;
         this.title = data.title;
@@ -41,5 +41,4 @@ public class PostResource {
     public String getBody() {
         return body;
     }
-
 }

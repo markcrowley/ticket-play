@@ -1,4 +1,4 @@
-package v1.post;
+package v1.ticket;
 
 import com.palominolabs.http.url.UrlBuilder;
 import play.libs.concurrent.HttpExecutionContext;
@@ -13,44 +13,44 @@ import java.util.stream.Stream;
 /**
  * Handles presentation of Post resources, which map to JSON.
  */
-public class PostResourceHandler {
+public class TicketResourceHandler {
 
-    private final PostRepository repository;
+    private final TicketRepository repository;
     private final HttpExecutionContext ec;
 
     @Inject
-    public PostResourceHandler(PostRepository repository, HttpExecutionContext ec) {
+    public TicketResourceHandler(TicketRepository repository, HttpExecutionContext ec) {
         this.repository = repository;
         this.ec = ec;
     }
 
-    public CompletionStage<Stream<PostResource>> find() {
+    public CompletionStage<Stream<TicketResource>> find() {
         return repository.list().thenApplyAsync(postDataStream -> {
-            return postDataStream.map(data -> new PostResource(data, link(data)));
+            return postDataStream.map(data -> new TicketResource(data, link(data)));
         }, ec.current());
     }
 
-    public CompletionStage<PostResource> create(PostResource resource) {
-        final PostData data = new PostData(resource.getTitle(), resource.getBody());
+    public CompletionStage<TicketResource> create(TicketResource resource) {
+        final TicketData data = new TicketData(resource.getTitle(), resource.getBody());
         return repository.create(data).thenApplyAsync(savedData -> {
-            return new PostResource(savedData, link(savedData));
+            return new TicketResource(savedData, link(savedData));
         }, ec.current());
     }
 
-    public CompletionStage<Optional<PostResource>> lookup(String id) {
+    public CompletionStage<Optional<TicketResource>> lookup(String id) {
         return repository.get(Long.parseLong(id)).thenApplyAsync(optionalData -> {
-            return optionalData.map(data -> new PostResource(data, link(data)));
+            return optionalData.map(data -> new TicketResource(data, link(data)));
         }, ec.current());
     }
 
-    public CompletionStage<Optional<PostResource>> update(String id, PostResource resource) {
-        final PostData data = new PostData(resource.getTitle(), resource.getBody());
+    public CompletionStage<Optional<TicketResource>> update(String id, TicketResource resource) {
+        final TicketData data = new TicketData(resource.getTitle(), resource.getBody());
         return repository.update(Long.parseLong(id), data).thenApplyAsync(optionalData -> {
-            return optionalData.map(op -> new PostResource(op, link(op)));
+            return optionalData.map(op -> new TicketResource(op, link(op)));
         }, ec.current());
     }
 
-    private String link(PostData data) {
+    private String link(TicketData data) {
         // Make a point of using request context here, even if it's a bit strange
         final Http.Request request = Http.Context.current().request();
         final String[] hostPort = request.host().split(":");
@@ -58,9 +58,7 @@ public class PostResourceHandler {
         int port = (hostPort.length == 2) ? Integer.parseInt(hostPort[1]) : -1;
         final String scheme = request.secure() ? "https" : "http";
         try {
-            return UrlBuilder.forHost(scheme, host, port)
-                    .pathSegments("v1", "posts", data.id.toString())
-                    .toUrlString();
+            return UrlBuilder.forHost(scheme, host, port).pathSegments("v1", "posts", data.id.toString()).toUrlString();
         } catch (CharacterCodingException e) {
             throw new IllegalStateException(e);
         }

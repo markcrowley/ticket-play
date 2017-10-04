@@ -1,4 +1,4 @@
-package v1.post;
+package v1.ticket;
 
 import javax.persistence.*;
 
@@ -6,19 +6,19 @@ import javax.persistence.*;
  * Data returned from the database
  */
 @Entity
-@Table(name = "posts")
-public class PostData {
+@Table(name = "tickets")
+public class TicketData {
 
-    public PostData() {
+    public TicketData() {
     }
 
-    public PostData(String title, String body) {
+    public TicketData(String title, String body) {
         this.title = title;
         this.body = body;
     }
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
     public String title;
     public String body;
