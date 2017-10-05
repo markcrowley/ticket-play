@@ -1,0 +1,6 @@
+
+GET    /                     v1.ticket.TicketController.list
+POST   /                     v1.ticket.TicketController.create
+
+GET    /:id                 v1.ticket.TicketController.show(id)
+POST    /:id                v1.ticket.TicketController.update(id)

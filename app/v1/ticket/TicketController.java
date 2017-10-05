@@ -37,7 +37,7 @@ public class TicketController extends Controller {
 
     public CompletionStage<Result> update(String id) {
         JsonNode json = request().body().asJson();
-        PostResource resource = Json.fromJson(json, PostResource.class);
+        TicketResource resource = Json.fromJson(json, TicketResource.class);
         return handler.update(id, resource).thenApplyAsync(optionalResource -> {
             return optionalResource.map(r -> ok(Json.toJson(r))).orElseGet(() -> notFound());
         }, ec.current());
@@ -45,7 +45,7 @@ public class TicketController extends Controller {
 
     public CompletionStage<Result> create() {
         JsonNode json = request().body().asJson();
-        final PostResource resource = Json.fromJson(json, PostResource.class);
+        final TicketResource resource = Json.fromJson(json, TicketResource.class);
         return handler.create(resource).thenApplyAsync(savedResource -> {
             return created(Json.toJson(savedResource));
         }, ec.current());
