@@ -11,7 +11,7 @@ import java.util.concurrent.CompletionStage;
 import java.util.stream.Stream;
 
 /**
- * Handles presentation of Post resources, which map to JSON.
+ * Handles presentation of Ticket resources, which map to JSON.
  */
 public class TicketResourceHandler {
 
@@ -25,8 +25,8 @@ public class TicketResourceHandler {
     }
 
     public CompletionStage<Stream<TicketResource>> find() {
-        return repository.list().thenApplyAsync(postDataStream -> {
-            return postDataStream.map(data -> new TicketResource(data, link(data)));
+        return repository.list().thenApplyAsync(ticketDataStream -> {
+            return ticketDataStream.map(data -> new TicketResource(data, link(data)));
         }, ec.current());
     }
 
@@ -58,7 +58,8 @@ public class TicketResourceHandler {
         int port = (hostPort.length == 2) ? Integer.parseInt(hostPort[1]) : -1;
         final String scheme = request.secure() ? "https" : "http";
         try {
-            return UrlBuilder.forHost(scheme, host, port).pathSegments("v1", "posts", data.id.toString()).toUrlString();
+            return UrlBuilder.forHost(scheme, host, port).pathSegments("v1", "tickets", data.id.toString())
+                    .toUrlString();
         } catch (CharacterCodingException e) {
             throw new IllegalStateException(e);
         }

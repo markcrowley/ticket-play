@@ -8,9 +8,9 @@ import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
-import v1.post.PostData;
-import v1.post.PostRepository;
-import v1.post.PostResource;
+import v1.ticket.TicketData;
+import v1.ticket.TicketRepository;
+import v1.ticket.TicketResource;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -26,12 +26,10 @@ public class IntegrationTest extends WithApplication {
 
     @Test
     public void testList() {
-        PostRepository repository = app.injector().instanceOf(PostRepository.class);
-        repository.create(new PostData("title", "body"));
+        TicketRepository repository = app.injector().instanceOf(TicketRepository.class);
+        repository.create(new TicketData("title", "body"));
 
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(GET)
-                .uri("/v1/posts");
+        Http.RequestBuilder request = new Http.RequestBuilder().method(GET).uri("/v1/tickets");
 
         Result result = route(app, request);
         final String body = contentAsString(result);
@@ -40,15 +38,13 @@ public class IntegrationTest extends WithApplication {
 
     @Test
     public void testTimeoutOnUpdate() {
-        PostRepository repository = app.injector().instanceOf(PostRepository.class);
-        repository.create(new PostData("title", "body"));
+        TicketRepository repository = app.injector().instanceOf(TicketRepository.class);
+        repository.create(new TicketData("title", "body"));
 
-        JsonNode json = Json.toJson(new PostResource("1", "http://localhost:9000/v1/posts/1", "some title", "somebody"));
+        JsonNode json = Json
+                .toJson(new TicketResource("1", "http://localhost:9000/v1/tickets/1", "some title", "somebody"));
 
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(POST)
-                .bodyJson(json)
-                .uri("/v1/posts/1");
+        Http.RequestBuilder request = new Http.RequestBuilder().method(POST).bodyJson(json).uri("/v1/tickets/1");
 
         Result result = route(app, request);
         assertThat(result.status(), equalTo(GATEWAY_TIMEOUT));
@@ -56,16 +52,12 @@ public class IntegrationTest extends WithApplication {
 
     @Test
     public void testCircuitBreakerOnShow() {
-        PostRepository repository = app.injector().instanceOf(PostRepository.class);
-        repository.create(new PostData("title", "body"));
+        TicketRepository repository = app.injector().instanceOf(TicketRepository.class);
+        repository.create(new TicketData("title", "body"));
 
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(GET)
-                .uri("/v1/posts/1");
+        Http.RequestBuilder request = new Http.RequestBuilder().method(GET).uri("/v1/tickets/1");
 
         Result result = route(app, request);
         assertThat(result.status(), equalTo(SERVICE_UNAVAILABLE));
     }
-
-
 }
