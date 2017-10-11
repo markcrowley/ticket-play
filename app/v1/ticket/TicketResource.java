@@ -28,8 +28,8 @@ public class TicketResource {
         this.link = link;
         this.creator = data.creator;
         this.description = data.description;
-        this.created = new Date();
-        this.due = new Date();
+        this.created = data.created;
+        this.due = data.due;
     }
 
     public String getId() {

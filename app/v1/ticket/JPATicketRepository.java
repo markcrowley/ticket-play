@@ -81,9 +81,6 @@ public class JPATicketRepository implements TicketRepository {
     }
 
     private TicketData insert(EntityManager em, TicketData ticketData) {
-        ticketData.created = new Date();
-        // ticketData.due = ticketData.created.plusHours(24);
-        ticketData.due = new Date();
         return em.merge(ticketData);
     }
 }
