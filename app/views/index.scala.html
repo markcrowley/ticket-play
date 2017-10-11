@@ -11,8 +11,8 @@
 <body>
   <h1>Ticket REST API</h1>
   <p>
-    This is a placeholder page to show you the REST API. Use <a href="https://httpie.org/">httpie</a> to post JSON to the
-    application.
+    This is a placeholder page to show you the REST API. Use
+    <a href="https://httpie.org/">httpie</a> to post JSON to the application.
   </p>
   <p>
     To see all tickets, you can do a GET:
@@ -24,10 +24,11 @@
     To create new tickets, do a post
     <p>
       <pre>
-      <code>http POST localhost:9000/v1/ticket description="Some description" requestor="Some requestor"</code>
+      <code>http POST localhost:9000/v1/tickets creator="Some requestor" description="Some description" </code>
     </pre>
       <p>
-        You can always look at the API directly: <a href="/v1/tickets">/v1/tickets</a>
+        You can always look at the API directly:
+        <a href="/v1/tickets">/v1/tickets</a>
       </p>
 </body>
 

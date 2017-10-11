@@ -45,6 +45,7 @@ public class TicketController extends Controller {
 
     public CompletionStage<Result> create() {
         JsonNode json = request().body().asJson();
+        System.out.println(json.toString());
         final TicketResource resource = Json.fromJson(json, TicketResource.class);
         return handler.create(resource).thenApplyAsync(savedResource -> {
             return created(Json.toJson(savedResource));

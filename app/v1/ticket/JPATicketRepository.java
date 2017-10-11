@@ -8,6 +8,9 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
+
+import java.util.Date;
+
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
@@ -70,14 +73,17 @@ public class JPATicketRepository implements TicketRepository {
     private Optional<TicketData> modify(EntityManager em, Long id, TicketData ticketData) throws InterruptedException {
         final TicketData data = em.find(TicketData.class, id);
         if (data != null) {
-            data.title = ticketData.title;
-            data.body = ticketData.body;
+            data.creator = ticketData.creator;
+            data.description = ticketData.description;
         }
         Thread.sleep(10000L);
         return Optional.ofNullable(data);
     }
 
     private TicketData insert(EntityManager em, TicketData ticketData) {
+        ticketData.created = new Date();
+        // ticketData.due = ticketData.created.plusHours(24);
+        ticketData.due = new Date();
         return em.merge(ticketData);
     }
 }

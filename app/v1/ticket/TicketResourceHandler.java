@@ -31,7 +31,7 @@ public class TicketResourceHandler {
     }
 
     public CompletionStage<TicketResource> create(TicketResource resource) {
-        final TicketData data = new TicketData(resource.getTitle(), resource.getBody());
+        final TicketData data = new TicketData(resource.getCreator(), resource.getDescription());
         return repository.create(data).thenApplyAsync(savedData -> {
             return new TicketResource(savedData, link(savedData));
         }, ec.current());
@@ -44,14 +44,16 @@ public class TicketResourceHandler {
     }
 
     public CompletionStage<Optional<TicketResource>> update(String id, TicketResource resource) {
-        final TicketData data = new TicketData(resource.getTitle(), resource.getBody());
+        final TicketData data = new TicketData(resource.getCreator(), resource.getDescription());
         return repository.update(Long.parseLong(id), data).thenApplyAsync(optionalData -> {
             return optionalData.map(op -> new TicketResource(op, link(op)));
         }, ec.current());
     }
 
     private String link(TicketData data) {
-        // Make a point of using request context here, even if it's a bit strange
+        /*
+         * Make a point of using request context here, even if it's a bit strange
+         */
         final Http.Request request = Http.Context.current().request();
         final String[] hostPort = request.host().split(":");
         String host = hostPort[0];
