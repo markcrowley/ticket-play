@@ -76,7 +76,7 @@ public class JPATicketRepository implements TicketRepository {
             data.creator = ticketData.creator;
             data.description = ticketData.description;
         }
-        Thread.sleep(10000L);
+        // Thread.sleep(10000L);
         return Optional.ofNullable(data);
     }
 
