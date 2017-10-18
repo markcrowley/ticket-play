@@ -61,8 +61,8 @@ public class JPATicketRepository implements TicketRepository {
     }
 
     private Optional<TicketData> lookup(EntityManager em, Long id) throws SQLException {
-        throw new SQLException("Call this to cause the circuit breaker to trip");
-        //return Optional.ofNullable(em.find(TicketData.class, id));
+        // throw new SQLException("Call this to cause the circuit breaker to trip");
+        return Optional.ofNullable(em.find(TicketData.class, id));
     }
 
     private Stream<TicketData> select(EntityManager em) {
